@@ -14,6 +14,7 @@ cd pluto-buildroot
 sudo apt-get install git build-essential fakeroot libncurses5-dev libssl-dev ccache
  sudo apt-get install dfu-util u-boot-tools device-tree-compiler libssl1.0-dev mtools
  sudo apt-get install bc python cpio zip unzip rsync file wget
+sudo apt-get install gcc-multilib g++-multilib
 ```
 
 # Building
