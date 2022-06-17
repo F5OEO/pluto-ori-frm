@@ -8,9 +8,18 @@ git clone --recursive --depth 1 --shallow-submodules https://github.com/F5OEO/hd
 cd pluto-buildroot
 ./run_only_once.sh
 ```
-#building
+
+# Debian dependencies
+```
+sudo apt-get install git build-essential fakeroot libncurses5-dev libssl-dev ccache
+ sudo apt-get install dfu-util u-boot-tools device-tree-compiler libssl1.0-dev mtools
+ sudo apt-get install bc python cpio zip unzip rsync file wget
+```
+
+# Building
 (from pluto-buildroot folder)
-You should have Vivado 2020.1 installed 
+You should have Vivado 2020.1 installed
+If Vivado is not installed on /opt/Xilinx/Vivado/2020.1, modify sourceme.ggm to the correct path 
 ```
 source sourceme.ggm
 cd ../plutosdr-fw
