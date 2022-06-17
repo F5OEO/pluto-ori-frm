@@ -1,0 +1,4 @@
+make -C linux ARCH=arm menuconfig
+make -C linux ARCH=arm savedefconfig
+cp ./linux/defconfig ./linux/arch/arm/configs/zynq_pluto_defconfig
+

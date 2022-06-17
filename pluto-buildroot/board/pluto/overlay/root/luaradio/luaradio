@@ -1,0 +1,123 @@
+#!/usr/bin/env luajit
+
+--------------------------------------------------------------------------------
+-- Load radio package
+--------------------------------------------------------------------------------
+
+-- Add ./?/init.lua to package path to support loading the package locally
+-- (e.g. when running directly from the repository)
+package.path = "./?/init.lua;" .. package.path
+
+-- Preload the radio package
+-- Possible package paths:
+--  Local package:      e.g. ./radio/init.lua
+--  Lua package:        e.g. /usr/share/lua/5.1/radio/init.lua
+--  Local C package:    e.g. ./radio.so
+--  C package:          e.g. /usr/lib/lua/5.1/radio.so
+package.preload['radio'] = require('radio')
+
+local radio = require('radio')
+
+local applications = require('radio.applications')
+
+--------------------------------------------------------------------------------
+-- Option handlers
+--------------------------------------------------------------------------------
+
+local util = require('radio.core.util')
+
+local options = {
+    {"help", "h", false, "Print help and exit"},
+    {"version", nil, false, "Print version and exit"},
+    {"platform", nil, false, "Dump platform and exit"},
+    {"verbose", "v", false, "Enable debug verbosity"},
+    {"application", "a", true, "Run built-in application"},
+}
+
+local function print_usage(program_name)
+    local usage = string.format("Usage: %s [options] <script> [args]\n", program_name)
+
+    usage = usage .. "\nOptions:\n"
+    usage = usage .. util.format_options(options)
+
+    print(usage .. "\n")
+
+    applications.print_usage(program_name)
+end
+
+local function print_version()
+    local version = "LuaRadio %s - Vanya A. Sergeev. https://luaradio.io"
+
+    print(string.format(version, radio.version))
+end
+
+local function print_platform()
+    local lines = {}
+    lines[#lines + 1] = string.format("luajit          %s", radio.platform.luajit_version)
+    lines[#lines + 1] = string.format("os              %s", radio.platform.os)
+    lines[#lines + 1] = string.format("arch            %s", radio.platform.arch)
+    lines[#lines + 1] = string.format("page size       %d", radio.platform.page_size)
+    lines[#lines + 1] = string.format("cpu count       %d", radio.platform.cpu_count)
+    lines[#lines + 1] = string.format("cpu model       %s", radio.platform.cpu_model)
+    lines[#lines + 1] = "features"
+
+    local colorize = {[true] = "\x1b[1;32mtrue\x1b[0m", [false] = "\x1b[1;31mfalse\x1b[0m"}
+    for feature,enabled in pairs(radio.platform.features) do
+        local version = radio.platform.versions[feature]
+        if version then
+            lines[#lines + 1] = string.format("    %-12s%s    %s", feature, colorize[enabled], version)
+        else
+            lines[#lines + 1] = string.format("    %-12s%s", feature, colorize[enabled])
+        end
+    end
+
+    print(table.concat(lines, "\n"))
+end
+
+local function enable_verbose()
+    radio.debug.enabled = true
+end
+
+--------------------------------------------------------------------------------
+-- Process arguments
+--------------------------------------------------------------------------------
+
+local program_name = arg[0]
+local parse_success, parsed_args = pcall(util.parse_args, arg, options)
+
+if not parse_success then
+    print(string.format("Error: %s\n", parsed_args.msg))
+    print_usage(program_name)
+    os.exit(1)
+elseif not parsed_args.application and parsed_args.help then
+    print_usage(program_name)
+    os.exit(0)
+elseif parsed_args.version then
+    print_version()
+    os.exit(0)
+elseif parsed_args.platform then
+    print_platform()
+    os.exit(0)
+elseif parsed_args.verbose then
+    enable_verbose()
+end
+
+if not parsed_args.application and #parsed_args < 1 then
+    print_usage(program_name)
+    os.exit(0)
+end
+
+-- Shift args down to script filename is arg[0]
+arg = {}
+for i = 1, #parsed_args do
+    arg[i - 1] = parsed_args[i]
+end
+
+-- Run application or script
+if parsed_args.application then
+    applications.run(program_name, parsed_args.application, parsed_args)
+elseif arg[0] == "-" then
+    dofile()
+else
+    dofile(arg[0])
+end

@@ -1,0 +1,15 @@
+After reading this online http://irq5.io/2016/12/22/raspberry-pi-zero-as-multiple-usb-gadgets/ 
+
+I realized that maybe I need to add Windows specific descriptors to my device to make it enumerate completely. So I've done this on the linux side after viewing usbaudio2.inf and finding the string %SubClass_00.DeviceDesc%=usbaudio2_Device, USB\Class_01&SubClass_00&Prot_20: 
+
+echo 1 > bDeviceClass
+echo 0 > bDeviceSubClass
+echo 20 > bDeviceProtocol
+echo 1       > os_desc/use
+echo 0xcd    > os_desc/b_vendor_code
+echo MSFT100 > os_desc/qw_sign
+ln -s configs/c.1 os_desc
+
+This is an improvement since now I see the correct name of my device under "sound, video and game controllers" but there is still an exclamation mark over the device and it still shows This device cannot start. (Code 10)
+
+

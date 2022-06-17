@@ -1,0 +1,22 @@
+VIVADO_PATH=/opt/Xilinx/Vivado/2020.1
+source "$VIVADO_PATH"/settings64.sh
+export CROSS_COMPILE=arm-linux-gnueabihf-
+export PATH=$PATH:/opt/Xilinx/Vivado/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin
+export VIVADO_SETTINGS="$VIVADO_PATH"/settings64.sh
+export VIVADO_VERSION=v2020.1
+ABSOLUTE_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+unset LD_LIBRARY_PATH
+
+export OSCIMP_DIGITAL_IP=/home/linuxdev/prog/pluto/firm033/oscimpDigital/fpga_ip
+
+# Add this directory only if not already added to avoid problem
+# with Buildroot
+export BOARD=$ABSOLUTE_PATH/board
+
+if [ -z "$(echo $BR2_EXTERNAL | grep $ABSOLUTE_PATH)" ]; then
+	export BR2_EXTERNAL=$ABSOLUTE_PATH
+    
+fi
+
+#patch buildroot package for update version ffmpeg and x264
+

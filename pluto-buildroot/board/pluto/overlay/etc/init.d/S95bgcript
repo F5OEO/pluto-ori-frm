@@ -1,0 +1,42 @@
+#!/bin/sh
+
+start() {
+
+#/root/readsensor.sh >/dev/null </dev/null 2>/dev/null &
+mkfifo /dev/rx1
+/root/switchmod.sh </dev/null 2>/dev/null &
+/root/pluto_mqtt_ctrl </dev/null 2>/dev/null &
+#/root/pluto_stream </dev/null 2>/dev/null &
+export HISTFILE="/mnt/jffs2/ash_history"
+
+}
+
+stop() {
+
+	echo "Stopping"
+}
+
+restart() {
+	stop
+	start
+}
+
+# start/stop/restart
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+
+
