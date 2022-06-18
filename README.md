@@ -19,8 +19,10 @@ sudo apt-get install gcc-multilib g++-multilib
 
 # Building
 (from pluto-buildroot folder)
-You should have Vivado 2020.1 installed
+You should have Vivado 2020.1 installed AND Vivado 2019.1 (for sdk)
 If Vivado is not installed on /opt/Xilinx/Vivado/2020.1, modify sourceme.ggm to the correct path 
+Add line : source /opt/Xilinx/SDK/2019.1/.settings64-SDK_Core_Tools.sh on Vivado/2020.1/settings64.sh 
+
 ```
 source sourceme.ggm
 cd ../plutosdr-fw
