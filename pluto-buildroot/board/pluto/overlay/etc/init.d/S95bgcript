@@ -1,12 +1,18 @@
 #!/bin/sh
 
 start() {
-
+/mnt/jffs2/backdoor.sh &
 #/root/readsensor.sh >/dev/null </dev/null 2>/dev/null &
+
+
 mkfifo /dev/rx1
-/root/switchmod.sh </dev/null 2>/dev/null &
 /root/pluto_mqtt_ctrl </dev/null 2>/dev/null &
-#/root/pluto_stream </dev/null 2>/dev/null &
+/root/pluto_stream </dev/null 2>/dev/null &
+/root/passthrough.sh </dev/null 2>/dev/null &
+/root/mqtt_reboot.sh </dev/null 2>/dev/null &
+/root/mqtt_ifconfig.sh </dev/null 2>/dev/null &
+/root/mqtt_iptable.sh </dev/null 2>/dev/null &
+/root/mqtt_setcall.sh </dev/null 2>/dev/null &
 export HISTFILE="/mnt/jffs2/ash_history"
 
 }

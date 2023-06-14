@@ -5,14 +5,14 @@
 case "$1" in
   start)
 
-#mkdir /sys/kernel/config/device-tree/overlays/fpga
-#cat /root/fpga.dtbo > /sys/kernel/config/device-tree/overlays/fpga/dtbo
+mkdir /sys/kernel/config/device-tree/overlays/fpga
+cat /root/fpga.dtbo > /sys/kernel/config/device-tree/overlays/fpga/dtbo
 
 sleep 0.5
 
 CORE_MODULES_DIR=/lib/modules
-#insmod ${CORE_MODULES_DIR}/data_to_ram_core.ko
-#insmod ${CORE_MODULES_DIR}/nco_counter_core.ko
+
+insmod ${CORE_MODULES_DIR}/nco_counter_core.ko
 
 
 
