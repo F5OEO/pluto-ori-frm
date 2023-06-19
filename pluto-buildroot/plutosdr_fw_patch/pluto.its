@@ -39,6 +39,14 @@
 			compression = "none";
 		};
 
+		fdt@4 {
+			description = "zynq-pluto-sdr-revplus";
+			data = /incbin/("../build/zynq-pluto-sdr-revplus.dtb");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+		};
+
 		fpga@1 {
 			description = "FPGA";
 			data = /incbin/("../build/system_top.bit");
@@ -156,8 +164,8 @@
 		};
 
 		config@9 { /* This one is actually RevB */
-			description = "Linux with fpga RevB";
-			fdt = "fdt@2";
+			description = "Linux with fpga RevPLus";
+			fdt = "fdt@4";
 			kernel = "linux_kernel@1";
 			ramdisk = "ramdisk@1";
 			fpga = "fpga@1";

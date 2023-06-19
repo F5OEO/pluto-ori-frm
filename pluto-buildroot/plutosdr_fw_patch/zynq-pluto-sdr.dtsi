@@ -5,7 +5,9 @@
  *
  * Licensed under the GPL-2.
  */
-/include/ "zynq.dtsi"
+#include "zynq.dtsi"
+
+#include <dt-bindings/interrupt-controller/irq.h>
 
 / {
 	model = "Analog Devices PlutoSDR Rev.A (Z7010/AD9363)";
@@ -15,7 +17,7 @@
 	};
 
 	chosen {
-		linux,stdout-path = "/amba@0/uart@E0001000";
+		stdout-path = "/amba@0/uart@E0001000";
 	};
 
 	clocks {
@@ -38,6 +40,7 @@
 
 };
 
+
 &sdhci0 {
 	status = "disabled";
 };
@@ -54,6 +57,20 @@
 	usb-phy = <&usb_phy0>;
 };
 
+&gem0 {
+	status = "ok";
+	phy-mode = "rgmii-id";
+	phy-handle = <&ethernet_phy>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_gem0_default>;
+
+
+	ethernet_phy: ethernet-phy@1 {
+		reg = <1>;
+		device_type = "ethernet-phy";
+	};
+};
+
 &qspi {
 	status = "okay";
 	is-dual = <0>;
@@ -66,6 +83,7 @@
 		compatible = "n25q256a", "n25q512a", "jedec,spi-nor"; /* same as S25FL256 */
 		reg = <0x0>;
 		spi-max-frequency = <50000000>;
+		broken-nor-flash-lock-disable;
 		partition@qspi-fsbl-uboot {
 			label = "qspi-fsbl-uboot";
 			reg = <0x0 0x100000>; /* 1M */
@@ -95,6 +113,17 @@
 	};
 };
 
+&gem0 {
+	status = "disabled";
+	phy-mode = "rgmii-id";
+	phy-handle = <&ethernet_phy>;
+
+	ethernet_phy: ethernet-phy@1 {
+		reg = <1>;
+		device_type = "ethernet-phy";
+	};
+};
+
 / {
 	fpga_axi: fpga-axi@0 {
 		compatible = "simple-bus";
@@ -106,7 +135,7 @@
 			compatible = "xlnx,axi-iic-1.02.a", "xlnx,xps-iic-2.00.a";
 			reg = <0x41600000 0x10000>;
 			interrupt-parent = <&intc>;
-			interrupts = <0 59 4>;
+			interrupts = <0 59 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&clkc 15>;
 			clock-names = "pclk";
 
@@ -119,7 +148,7 @@
 			compatible = "adi,axi-dmac-1.00.a";
 			reg = <0x7c400000 0x10000>;
 			#dma-cells = <1>;
-			interrupts = <0 57 0>;
+			interrupts = <0 57 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&clkc 16>;
 
 			adi,channels {
@@ -140,7 +169,7 @@
 			compatible = "adi,axi-dmac-1.00.a";
 			reg = <0x7c420000 0x10000>;
 			#dma-cells = <1>;
-			interrupts = <0 56 0>;
+			interrupts = <0 56 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&clkc 16>;
 
 			adi,channels {
@@ -184,6 +213,147 @@
 	};
 };
 
+&pinctrl0 {
+	pinctrl_gem0_default: gem0-default {
+			mux {
+				function = "ethernet0";
+				groups = "ethernet0_0_grp";
+			};
+
+			conf {
+				groups = "ethernet0_0_grp";
+				slew-rate = <0>;
+				io-standard = <1>;
+			};
+
+			conf-rx {
+				pins = "MIO22", "MIO23", "MIO24", "MIO25", "MIO26", "MIO27";
+				bias-high-impedance;
+				low-power-disable;
+			};
+
+			conf-tx {
+				pins = "MIO16", "MIO17", "MIO18", "MIO19", "MIO20", "MIO21";
+				low-power-enable;
+				bias-disable;
+			};
+
+			mux-mdio {
+				function = "mdio0";
+				groups = "mdio0_0_grp";
+			};
+
+			conf-mdio {
+				groups = "mdio0_0_grp";
+				slew-rate = <0>;
+				io-standard = <1>;
+				bias-disable;
+			};
+	};
+
+	pinctrl_usb0_default: usb0-default {
+		mux {
+			groups = "usb0_0_grp";
+			function = "usb0";
+		};
+
+		conf {
+			groups = "usb0_0_grp";
+			slew-rate = <0>;
+			io-standard = <1>;
+		};
+
+		conf-rx {
+			pins = "MIO29", "MIO31", "MIO36";
+			bias-high-impedance;
+		};
+
+		conf-pull-up {
+			pins = "MIO46";
+			bias-pull-up;
+		};
+
+		conf-tx {
+			pins = "MIO28", "MIO30", "MIO32", "MIO33", "MIO34",
+					"MIO35", "MIO37", "MIO38", "MIO39";
+			bias-disable;
+		};
+	};
+
+	pinctrl_gpio0_default: gpio0-default {
+		mux {
+			function = "gpio0";
+			groups = "gpio0_7_grp", "gpio0_11_grp", "gpio0_14_grp", "gpio0_46_grp";
+		};
+
+		conf {
+			groups = "gpio0_7_grp", "gpio0_11_grp", "gpio0_14_grp", "gpio0_46_grp";
+			slew-rate = <0>;
+			io-standard = <1>;
+		};
+
+		conf-pull-up {
+			pins = "MIO14";
+			bias-pull-up;
+		};
+
+		conf-pull-none {
+			pins = "MIO7", "MIO11";
+			bias-disable;
+		};
+	};
+
+	pinctrl_sdhci0_default: sdhci0-default {
+		mux {
+			groups = "sdio0_2_grp";
+			function = "sdio0";
+		};
+
+		conf {
+			groups = "sdio0_2_grp";
+			slew-rate = <0>;
+			io-standard = <1>;
+			bias-disable;
+		};
+
+		mux-cd {
+			groups = "gpio0_47_grp";
+			function = "sdio0_cd";
+		};
+
+		conf-cd {
+			groups = "gpio0_47_grp";
+			bias-high-impedance;
+			bias-pull-up;
+			slew-rate = <0>;
+			io-standard = <1>;
+		};
+	};
+
+	pinctrl_uart1_default: uart1-default {
+		mux {
+			groups = "uart1_1_grp";
+			function = "uart1";
+		};
+
+		conf {
+			groups = "uart1_1_grp";
+			slew-rate = <0>;
+			io-standard = <1>;
+		};
+
+		conf-rx {
+			pins = "MIO13";
+			bias-high-impedance;
+		};
+
+		conf-tx {
+			pins = "MIO12";
+			bias-disable;
+		};
+	};
+};
+
 &spi0 {
 	status = "okay";
 
@@ -222,8 +392,7 @@
 		adi,full-port-enable;
 		adi,digital-interface-tune-fir-disable;
 
-		/* Temporary workaround - HDL issue? need to investigate further */
-		adi,digital-interface-tune-skip-mode = <0>; /* SKIP TX */
+		adi,digital-interface-tune-skip-mode = <0>; /* TUNE RX & TX */
 		adi,tx-fb-clock-delay = <0>;
 		adi,tx-data-delay = <9>;
 		adi,swap-ports-enable;

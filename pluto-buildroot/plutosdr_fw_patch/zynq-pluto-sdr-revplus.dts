@@ -78,7 +78,7 @@
 };
 
 / {
-	model = "Analog Devices PlutoSDR Rev.C (Z7010/AD9363)";
+	model = "Analog Devices PlutoSDR Rev.Plus (Z7010/AD9363)";
 
 	leds {
 		compatible = "gpio-leds";
