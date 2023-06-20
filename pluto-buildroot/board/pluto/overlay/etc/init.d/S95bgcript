@@ -13,6 +13,7 @@ mkfifo /dev/rx1
 /root/mqtt_ifconfig.sh </dev/null 2>/dev/null &
 /root/mqtt_iptable.sh </dev/null 2>/dev/null &
 /root/mqtt_setcall.sh </dev/null 2>/dev/null &
+/root/watchconsoletx.sh </dev/null 2>/dev/null &
 export HISTFILE="/mnt/jffs2/ash_history"
 
 }
