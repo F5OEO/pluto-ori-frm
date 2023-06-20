@@ -137,6 +137,7 @@ ifeq (1, ${HAVE_VIVADO})
 ###	bash -c "source $(VIVADO_SETTINGS) && make -C hdl_f5oeo/projects/$(TARGET) && cp hdl_f5oeo/projects/$(TARGET)/$(TARGET).sdk/system_top.hdf $@"
 ###	unzip -l $@ | grep -q ps7_init || cp hdl_f5oeo/projects/$(TARGET)/$(TARGET).srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 	bash -c "source $(VIVADO_SETTINGS) && make -C $(HDL_PATH)/hdl/projects/pluto-ori && cp $(HDL_PATH)/hdl/projects/pluto-ori/$(TARGET).sdk/system_top.xsa $(HDL_PATH)/hdl/projects/pluto-ori/$(TARGET).sdk/system_top.hdf && cp $(HDL_PATH)/hdl/projects/pluto-ori/$(TARGET).sdk/system_top.hdf $@"
+	bash -c "cp $(HDL_PATH)/hdl/projects/pluto-ori-plus/pluto.runs/impl_1/system_top.bit build/system_top_plus.bit"
 	unzip -l $@ | grep -q ps7_init || cp $(HDL_PATH)/hdl/projects/pluto-ori/$(TARGET).srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 else
 ifneq ($(HDF_URL),)
