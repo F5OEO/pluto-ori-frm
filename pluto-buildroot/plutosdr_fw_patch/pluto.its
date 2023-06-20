@@ -59,6 +59,18 @@
 			};
 		};
 
+		fpga@2 {
+			description = "FPGA";
+			data = /incbin/("../build/system_top_plus.bit");
+			type = "fpga";
+			arch = "arm";
+			compression = "none";
+			load = <0xF000000>;
+			hash@1 {
+				algo = "md5";
+			};
+		};
+
 		linux_kernel@1 {
 			description = "Linux";
 			data = /incbin/("../build/zImage");
@@ -168,7 +180,7 @@
 			fdt = "fdt@4";
 			kernel = "linux_kernel@1";
 			ramdisk = "ramdisk@1";
-			fpga = "fpga@1";
+			fpga = "fpga@2";
 		};
 
 		config@10 {

@@ -77,8 +77,19 @@
 	compatible = "adi,axi-ad9361-dds-6.00.a";
 };
 
+&sdhci0 {
+	status = "okay";
+    disable-wp;
+	};
+
 / {
-	model = "Analog Devices PlutoSDR Rev.Plus (Z7010/AD9363)";
+	model = "Analog Devices PlutoSDR Rev.C (Z7010/AD9363)";
+
+	
+	aliases {
+		ethernet0 = &gem0;
+		mmc0 = &sdhci0;
+	};
 
 	leds {
 		compatible = "gpio-leds";
@@ -101,4 +112,20 @@
 			linux,code = <BTN_MISC>;
 		};
 	};
+};
+
+&gem0 {
+	status = "okay";
+
+    pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_gem0_default>;
+};
+
+&usb0 {
+	xlnx,phy-reset-gpio = <&gpio0 46 0>;
+	dr_mode = "otg";
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usb0_default>;
+	usb-phy = <&usb_phy0>;
 };
