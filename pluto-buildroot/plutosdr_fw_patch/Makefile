@@ -21,7 +21,9 @@ NCORES = $(shell grep -c ^processor /proc/cpuinfo)
 VIVADO_SETTINGS ?= /opt/Xilinx/Vivado/$(VIVADO_VERSION)/settings64.sh
 VSUBDIRS = hdl buildroot linux u-boot-xlnx
 
-VERSION=$(shell git describe --abbrev=4 --dirty --always --tags)
+
+#VERSION=$(shell git describe --abbrev=4 --dirty --always --tags)
+VERSION=$(shell git -C /home/linuxdev/prog/pluto-ori-ps describe --abbrev=4 --always --tags)
 LATEST_TAG=$(shell git describe --abbrev=0 --tags)
 UBOOT_VERSION=$(shell echo -n "PlutoSDR " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
 HAVE_VIVADO= $(shell bash -c "source $(VIVADO_SETTINGS) > /dev/null 2>&1 && vivado -version > /dev/null 2>&1 && echo 1 || echo 0")
@@ -114,9 +116,8 @@ build/%.dtb: linux/arch/arm/boot/dts/%.dtb | build
 ### Buildroot ###
 
 buildroot/output/images/rootfs.cpio.gz:
-	@echo device-fw $(VERSION)> $(CURDIR)/buildroot/board/$(TARGET)/VERSIONS
-	@$(foreach dir,$(VSUBDIRS),echo $(dir) $(shell cd $(dir) && git describe --abbrev=4 --dirty --always --tags) >> $(CURDIR)/buildroot/board/$(TARGET)/VERSIONS;)
-	make -C buildroot ARCH=arm f5oeo_zynq_$(TARGET)_defconfig
+@echo device-fw $(VERSION)> $(BR2_EXTERNAL)/board/$(TARGET)/VERSIONS
+	@$(foreach dir,$(VSUBDIRS),echo $(dir) $(shell cd $(dir) && git describe --abbrev=4 --dirty --always --tags) >> $(BR2_EXTERNAL)/board/$(TARGET)/VERSIONS;)	make -C buildroot ARCH=arm f5oeo_zynq_$(TARGET)_defconfig
 	#make -C buildroot legal-info
 	#scripts/legal_info_html.sh "$(COMPLETE_NAME)" "$(CURDIR)/buildroot/board/$(TARGET)/VERSIONS"
 	#cp build/LICENSE.html buildroot/board/$(TARGET)/msd/LICENSE.html
