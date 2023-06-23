@@ -57,13 +57,12 @@
 	usb-phy = <&usb_phy0>;
 };
 
+
+
 &gem0 {
-	status = "ok";
+	status = "disabled";
 	phy-mode = "rgmii-id";
 	phy-handle = <&ethernet_phy>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_gem0_default>;
-
 
 	ethernet_phy: ethernet-phy@1 {
 		reg = <1>;
@@ -113,16 +112,7 @@
 	};
 };
 
-&gem0 {
-	status = "disabled";
-	phy-mode = "rgmii-id";
-	phy-handle = <&ethernet_phy>;
 
-	ethernet_phy: ethernet-phy@1 {
-		reg = <1>;
-		device_type = "ethernet-phy";
-	};
-};
 
 / {
 	fpga_axi: fpga-axi@0 {
@@ -213,146 +203,6 @@
 	};
 };
 
-&pinctrl0 {
-	pinctrl_gem0_default: gem0-default {
-			mux {
-				function = "ethernet0";
-				groups = "ethernet0_0_grp";
-			};
-
-			conf {
-				groups = "ethernet0_0_grp";
-				slew-rate = <0>;
-				io-standard = <1>;
-			};
-
-			conf-rx {
-				pins = "MIO22", "MIO23", "MIO24", "MIO25", "MIO26", "MIO27";
-				bias-high-impedance;
-				low-power-disable;
-			};
-
-			conf-tx {
-				pins = "MIO16", "MIO17", "MIO18", "MIO19", "MIO20", "MIO21";
-				low-power-enable;
-				bias-disable;
-			};
-
-			mux-mdio {
-				function = "mdio0";
-				groups = "mdio0_0_grp";
-			};
-
-			conf-mdio {
-				groups = "mdio0_0_grp";
-				slew-rate = <0>;
-				io-standard = <1>;
-				bias-disable;
-			};
-	};
-
-	pinctrl_usb0_default: usb0-default {
-		mux {
-			groups = "usb0_0_grp";
-			function = "usb0";
-		};
-
-		conf {
-			groups = "usb0_0_grp";
-			slew-rate = <0>;
-			io-standard = <1>;
-		};
-
-		conf-rx {
-			pins = "MIO29", "MIO31", "MIO36";
-			bias-high-impedance;
-		};
-
-		conf-pull-up {
-			pins = "MIO46";
-			bias-pull-up;
-		};
-
-		conf-tx {
-			pins = "MIO28", "MIO30", "MIO32", "MIO33", "MIO34",
-					"MIO35", "MIO37", "MIO38", "MIO39";
-			bias-disable;
-		};
-	};
-
-	pinctrl_gpio0_default: gpio0-default {
-		mux {
-			function = "gpio0";
-			groups = "gpio0_7_grp", "gpio0_11_grp", "gpio0_14_grp", "gpio0_46_grp";
-		};
-
-		conf {
-			groups = "gpio0_7_grp", "gpio0_11_grp", "gpio0_14_grp", "gpio0_46_grp";
-			slew-rate = <0>;
-			io-standard = <1>;
-		};
-
-		conf-pull-up {
-			pins = "MIO14";
-			bias-pull-up;
-		};
-
-		conf-pull-none {
-			pins = "MIO7", "MIO11";
-			bias-disable;
-		};
-	};
-
-	pinctrl_sdhci0_default: sdhci0-default {
-		mux {
-			groups = "sdio0_2_grp";
-			function = "sdio0";
-		};
-
-		conf {
-			groups = "sdio0_2_grp";
-			slew-rate = <0>;
-			io-standard = <1>;
-			bias-disable;
-		};
-
-		mux-cd {
-			groups = "gpio0_47_grp";
-			function = "sdio0_cd";
-		};
-
-		conf-cd {
-			groups = "gpio0_47_grp";
-			bias-high-impedance;
-			bias-pull-up;
-			slew-rate = <0>;
-			io-standard = <1>;
-		};
-	};
-
-	pinctrl_uart1_default: uart1-default {
-		mux {
-			groups = "uart1_1_grp";
-			function = "uart1";
-		};
-
-		conf {
-			groups = "uart1_1_grp";
-			slew-rate = <0>;
-			io-standard = <1>;
-		};
-
-		conf-rx {
-			pins = "MIO13";
-			bias-high-impedance;
-		};
-
-		conf-tx {
-			pins = "MIO12";
-			bias-disable;
-		};
-	};
-};
 
 &spi0 {
 	status = "okay";
