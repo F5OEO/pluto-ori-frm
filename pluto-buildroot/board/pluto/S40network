@@ -35,6 +35,9 @@ create_system_files () {
     echo "end $IPADDR_HOST" >> $UDHCPD_CONF
 	echo "interface usb0" >> $UDHCPD_CONF
 	echo "option subnet $NETMASK" >> $UDHCPD_CONF
+	#router option could force the pc to have this gateway
+	# But bad idea when mounted before eth0 of PC
+	#echo "option router $IPADDR" >> $UDHCPD_CONF
 
 	### /etc/network/interfaces ###
 	echo -e "auto lo\n""iface lo inet loopback\n" > $IFAC
@@ -170,8 +173,11 @@ create_new_system_files () {
 	fi
 	### /etc/udhcpd.conf ###
 	echo "start $IPADDR_HOST" > $UDHCPD_CONF
+	echo "end $IPADDR_HOST" >> $UDHCPD_CONF
 	echo "interface usb0" >> $UDHCPD_CONF
 	echo "option subnet $NETMASK" >> $UDHCPD_CONF
+	#echo "option router $IPADDR" >> $UDHCPD_CONF
+
 	
 	### /etc/network/interfaces ###
 	echo -e "auto lo\n""iface lo inet loopback\n" > $IFAC
